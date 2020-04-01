@@ -17,6 +17,11 @@ public class PublicController {
         return "sys/login";
     }
 
+    @GetMapping("/")
+    public String fisrt(){
+        return "sys/login";
+    }
+
     @RequestMapping("list")
     public String form(){
         return "list";
