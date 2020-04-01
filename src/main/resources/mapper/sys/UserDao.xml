@@ -124,7 +124,7 @@
         #{isBlock},
         #{tel},
         #{email},
-        #{lend_point}
+        '0'
         )
     </insert>
 
