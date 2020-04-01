@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.so.demosboot.modules.share.dao.ShareToReportDao">
+    
+	<sql id="shareToReportColumns">
+		a.id AS "id",
+		a.order_id AS "orderId",
+		a.repot_user AS "repotUser",
+		a.report_content AS "reportContent",
+		a.report_time AS "reportTime",
+		a.reporter AS "reporter"
+	</sql>
+	
+	<sql id="shareToReportJoins">
+	</sql>
+    
+	<select id="getById" resultType="com.so.demosboot.modules.share.entity.ShareToReport">
+		SELECT 
+			<include refid="shareToReportColumns"/>
+		FROM share_to_report a
+		<include refid="shareToReportJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="com.so.demosboot.modules.share.entity.ShareToReport">
+		SELECT 
+			<include refid="shareToReportColumns"/>
+		FROM share_to_report a
+		<include refid="shareToReportJoins"/>
+		<where>
+			
+			<if test="orderId != null and orderId != ''">
+				AND a.order_id = #{orderId}
+			</if>
+			<if test="repotUser != null and repotUser != ''">
+				AND a.repot_user = #{repotUser}
+			</if>
+			<if test="reporter != null and reporter != ''">
+				AND a.reporter = #{reporter}
+			</if>
+		</where>
+		<choose>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="com.so.demosboot.modules.share.entity.ShareToReport">
+		SELECT 
+			<include refid="shareToReportColumns"/>
+		FROM share_to_report a
+		<include refid="shareToReportJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO share_to_report(
+			id,
+			order_id,
+			repot_user,
+			report_content,
+			report_time,
+			reporter
+		) VALUES (
+			#{id},
+			#{orderId},
+			#{repotUser},
+			#{reportContent},
+			#{reportTime},
+			#{reporter}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE share_to_report SET 	
+			order_id = #{orderId},
+			repot_user = #{repotUser},
+			report_content = #{reportContent},
+			report_time = #{reportTime},
+			reporter = #{reporter}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM share_to_report
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.so.demosboot.modules.share.dao.ItemsDao">
+    
+	<sql id="itemsColumns">
+		a.id AS "id",
+		a.item_type AS "itemType",
+		a.name AS "name",
+		a.content AS "content",
+		a.image AS "image",
+		a.createsite AS "createsite",
+		a.createtime AS "createtime",
+		a.audit_statue AS "auditStatue",
+		a.onsell AS "onsell",
+		a.downselftime AS "downselftime",
+		a.updatetime AS "updatetime",
+		a.belong_user AS "belongUser",
+		a.rent_type AS "rentType",
+		a.rent_price AS "rentPrice",
+		b.name AS "typeName"
+	</sql>
+	
+	<sql id="itemsJoins">
+		left join db_category b on b.id = a.item_type
+	</sql>
+    
+	<select id="getById" resultType="com.so.demosboot.modules.share.entity.Items">
+		SELECT 
+			<include refid="itemsColumns"/>
+		FROM db_items a
+		<include refid="itemsJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="com.so.demosboot.modules.share.entity.Items">
+		SELECT 
+			<include refid="itemsColumns"/>
+		FROM db_items a
+		<include refid="itemsJoins"/>
+		<where>
+			
+			<if test="itemType != null and itemType != ''">
+				AND a.item_type = #{itemType}
+			</if>
+			<if test="name != null and name != ''">
+				AND a.name LIKE  concat('%',#{name},'%')
+			</if>
+			<if test="auditStatue != null and auditStatue != ''">
+				AND a.audit_statue = #{auditStatue}
+			</if>
+			<if test="onsell != null and onsell != ''">
+				AND a.onsell = #{onsell}
+			</if>
+			<if test="belongUser != null and belongUser != ''">
+				AND a.belong_user = #{belongUser}
+			</if>
+			<if test="rentType != null and rentType != ''">
+				AND a.rent_type = #{rentType}
+			</if>
+		</where>
+		<choose>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="com.so.demosboot.modules.share.entity.Items">
+		SELECT 
+			<include refid="itemsColumns"/>
+		FROM db_items a
+		<include refid="itemsJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO db_items(
+			id,
+			item_type,
+			name,
+			content,
+			image,
+			createsite,
+			createtime,
+			audit_statue,
+			onsell,
+			downselftime,
+			updatetime,
+			belong_user,
+			rent_type,
+			rent_price
+		) VALUES (
+			#{id},
+			#{itemType},
+			#{name},
+			#{content},
+			#{image},
+			#{createsite},
+			#{createtime},
+			#{auditStatue},
+			#{onsell},
+			#{downselftime},
+			#{updatetime},
+			#{belongUser},
+			#{rentType},
+			#{rentPrice}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE db_items SET 	
+			item_type = #{itemType},
+			name = #{name},
+			content = #{content},
+			image = #{image},
+			createsite = #{createsite},
+			createtime = #{createtime},
+			audit_statue = #{auditStatue},
+			onsell = #{onsell},
+			downselftime = #{downselftime},
+			updatetime = #{updatetime},
+			belong_user = #{belongUser},
+			rent_type = #{rentType},
+			rent_price = #{rentPrice}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM db_items
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

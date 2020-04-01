@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.so.demosboot.modules.share.dao.ShareOrderInfoDao">
+    
+	<sql id="shareOrderInfoColumns">
+		a.id AS "id",
+		a.item_id AS "itemId",
+		a.user_id AS "userId",
+		a.order_time AS "orderTime",
+		a.rent_times AS "rentTimes",
+		a.should_back_time AS "shouldBackTime",
+		a.is_back AS "isBack",
+		a.back_time AS "backTime",
+		b.name AS "itemName",
+		a.is_comment AS "isComment",
+		a.is_report AS "isReport"
+	</sql>
+	
+	<sql id="shareOrderInfoJoins">
+		left join db_items b on b.id = a.item_id
+		left join sys_user u on u.id = a.user_id
+	</sql>
+    
+	<select id="getById" resultType="com.so.demosboot.modules.share.entity.ShareOrderInfo">
+		SELECT 
+			<include refid="shareOrderInfoColumns"/>
+		FROM share_order_info a
+		<include refid="shareOrderInfoJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="com.so.demosboot.modules.share.entity.ShareOrderInfo">
+		SELECT 
+			<include refid="shareOrderInfoColumns"/>
+		FROM share_order_info a
+		<include refid="shareOrderInfoJoins"/>
+		<where>
+			
+			<if test="itemId != null and itemId != ''">
+				AND a.item_id = #{itemId}
+			</if>
+			<if test="userId != null and userId != ''">
+				AND a.user_id = #{userId}
+			</if>
+			<if test="isBack != null and isBack != ''">
+				AND a.is_back = #{isBack}
+			</if>
+			<if test="itemName != null and itemName != ''">
+				AND b.name LIKE  concat('%',#{itemName},'%')
+			</if>
+			<if test="sqlStr != null and sqlStr != ''">
+				${sqlStr}
+			</if>
+			<if test="isComment != null and isComment != ''">
+				AND a.is_comment = #{isComment}
+			</if>
+			
+		</where>
+		<choose>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="com.so.demosboot.modules.share.entity.ShareOrderInfo">
+		SELECT 
+			<include refid="shareOrderInfoColumns"/>
+		FROM share_order_info a
+		<include refid="shareOrderInfoJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO share_order_info(
+			id,
+			item_id,
+			user_id,
+			order_time,
+			rent_times,
+			should_back_time,
+			is_back,
+			back_time,
+			is_comment,
+			is_report
+		) VALUES (
+			#{id},
+			#{itemId},
+			#{userId},
+			#{orderTime},
+			#{rentTimes},
+			#{shouldBackTime},
+			#{isBack},
+			#{backTime},
+			#{isComment},
+			#{isReport}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE share_order_info SET 	
+			item_id = #{itemId},
+			user_id = #{userId},
+			order_time = #{orderTime},
+			rent_times = #{rentTimes},
+			should_back_time = #{shouldBackTime},
+			is_back = #{isBack},
+			back_time = #{backTime},
+			is_comment =#{isComment},
+			is_report = #{isReport}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM share_order_info
+		WHERE id = #{id}
+	</update>
+	
+</mapper>

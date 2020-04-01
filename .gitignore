@@ -1,0 +1,21 @@
+# Created by .ignore support plugin (hsz.mobi)
+.idea
+*.iml
+out
+gen
+/.apt_generated/
+/.classpath
+/.factorypath
+/.project
+/.settings/
+/.springBeans
+/target/
+/.gitignore
+/.idea
+/README.md
+src/test/
+target/
+.idea/
+manager_sys.iml
+pom.xml
+src/

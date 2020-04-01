@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.so.demosboot.modules.cms.dao.CommentsDao">
+    
+	<sql id="commentsColumns">
+		a.id AS "id",
+		a.table_name AS "tableName",
+		a.table_id AS "tableId",
+		a.comment_content AS "commentContent",
+		a.comment_time AS "commentTime",
+		a.comment_user AS "commentUser",
+		a.parent_id AS "parent"
+	</sql>
+	
+	<sql id="commentsJoins">
+	</sql>
+    
+	<select id="getById" resultType="com.so.demosboot.modules.cms.entity.Comments">
+		SELECT 
+			<include refid="commentsColumns"/>
+		FROM cms_comments a
+		<include refid="commentsJoins"/>
+		WHERE a.id = #{id}
+	</select>
+	
+	<select id="findList" resultType="com.so.demosboot.modules.cms.entity.Comments">
+		SELECT 
+			<include refid="commentsColumns"/>
+		FROM cms_comments a
+		<include refid="commentsJoins"/>
+		<where>
+			
+			<if test="tableName != null and tableName != ''">
+				AND a.table_name = #{tableName}
+			</if>
+			<if test="tableId != null and tableId != ''">
+				AND a.table_id = #{tableId}
+			</if>
+			<if test="commentContent != null and commentContent != ''">
+				AND a.comment_content LIKE  concat('%',#{commentContent},'%')
+			</if>
+			<if test="commentUser != null and commentUser != ''">
+				AND a.comment_user = #{commentUser}
+			</if>
+			<if test="parent != null and parent != '' ">
+				AND a.parent_id = #{parent}
+			</if>
+		</where>
+		<choose>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<select id="findAllList" resultType="com.so.demosboot.modules.cms.entity.Comments">
+		SELECT 
+			<include refid="commentsColumns"/>
+		FROM cms_comments a
+		<include refid="commentsJoins"/>
+		<where>
+			
+		</where>		
+		<choose>
+			<otherwise>
+			</otherwise>
+		</choose>
+	</select>
+	
+	<insert id="insert">
+		INSERT INTO cms_comments(
+			id,
+			table_name,
+			table_id,
+			comment_content,
+			comment_time,
+			comment_user,
+			parent_id
+		) VALUES (
+			#{id},
+			#{tableName},
+			#{tableId},
+			#{commentContent},
+			#{commentTime},
+			#{commentUser},
+			#{parent}
+		)
+	</insert>
+	
+	<update id="update">
+		UPDATE cms_comments SET 	
+			table_name = #{tableName},
+			table_id = #{tableId},
+			comment_content = #{commentContent},
+			comment_time = #{commentTime},
+			comment_user = #{commentUser},
+			parent_id = #{parent}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete">
+		DELETE FROM cms_comments
+		WHERE id = #{id}
+	</update>
+	
+</mapper>
