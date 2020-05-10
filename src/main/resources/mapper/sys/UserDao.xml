@@ -106,6 +106,34 @@
         </choose>
     </select>
 
+    <select id="findAllListByTel" resultType="com.so.demosboot.modules.sys.entity.User">
+        SELECT
+        <include refid="userColumns"/>
+        FROM sys_user a
+        <include refid="userJoins"/>
+        <where>
+            <if test="username != null and username != ''">
+                AND a.username = #{username}
+            </if>
+            <if test="role != null and role != ''">
+                AND a.role = #{role}
+            </if>
+            <if test="isBlock != null and isBlock != ''">
+                AND a.is_block = #{isBlock}
+            </if>
+            <if test="tel != null and tel != ''">
+                AND a.tel = #{tel}
+            </if>
+            <if test="email != null and email != ''">
+                AND a.email = #{email}
+            </if>
+        </where>
+        <choose>
+            <otherwise>
+            </otherwise>
+        </choose>
+    </select>
+
     <insert id="insert">
         INSERT INTO sys_user(
         id,
