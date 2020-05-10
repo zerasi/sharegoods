@@ -27,7 +27,7 @@ public class WebFilter implements Filter {
     
     public void addInterceptors(InterceptorRegistry registry){
     	registry.addInterceptor(new LoginHandlerInterceptor()).addPathPatterns("/**")
-    		.excludePathPatterns("/login.html","/assets/**");
+    		.excludePathPatterns("/login.html","/assets/**","/sys/user/sendMsgCode");
     }
 
 }

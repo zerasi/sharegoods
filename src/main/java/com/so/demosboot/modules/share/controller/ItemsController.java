@@ -96,7 +96,7 @@ public class ItemsController{
 	@RequestMapping(value = "save")
 	public String save(Items items,@RequestParam(value = "file",required=false) MultipartFile file,HttpServletRequest request, RedirectAttributes redirectAttributes) {
 		String upload = FileUploadAndDowload.upload(file, "itemsImage");
-		if (StringUtils.isNoneEmpty(upload)) {
+		if (StringUtils.isNotEmpty(upload)) {
 			items.setImage(upload);
 		}
 		if (StringUtils.isEmpty(items.getId())) {

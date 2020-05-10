@@ -33,4 +33,5 @@ public interface UserDao extends BaseDao<User> {
 
 	public void deleteUserLink(UserLink userLink);
 
+    List<User> findAllListByTel(User user);
 }

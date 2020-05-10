@@ -16,6 +16,8 @@ public class User extends BaseEntity<User> {
 	
 	private BigDecimal lendPoint;
 
+	private String msgCode;
+
 
 	public BigDecimal getLendPoint() {
 		return lendPoint;
@@ -72,5 +74,12 @@ public class User extends BaseEntity<User> {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	
+
+	public String getMsgCode() {
+		return msgCode;
+	}
+
+	public void setMsgCode(String msgCode) {
+		this.msgCode = msgCode;
+	}
 }

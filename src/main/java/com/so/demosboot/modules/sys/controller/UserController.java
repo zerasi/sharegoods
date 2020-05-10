@@ -7,14 +7,13 @@ import com.github.pagehelper.PageInfo;
 import com.so.demosboot.common.utils.DateUtils;
 import com.so.demosboot.common.utils.StringUtils;
 
+import com.so.demosboot.modules.sys.utils.SendMsgUtils;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.http.HttpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import com.so.demosboot.modules.share.entity.Items;
 import com.so.demosboot.modules.sys.entity.User;
@@ -26,6 +25,7 @@ import com.so.demosboot.modules.sys.utils.Result;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 @Controller
 @RequestMapping("/sys/user")
@@ -51,7 +51,7 @@ public class UserController {
 	
 	/**
 	 * 列表查询
-	 * @param user
+	 * @param userLink
 	 * @param model
 	 * @return
 	 */
@@ -66,7 +66,7 @@ public class UserController {
 	
 	/**
 	 * 列表查询
-	 * @param user
+	 * @param userEx
 	 * @param model
 	 * @return
 	 */
@@ -164,6 +164,41 @@ public class UserController {
 			return "sys/login";
 		}
 	}
+
+	/**
+	 * 验证码登录
+	 * @param user
+	 * @param request
+	 * @param model
+	 * @return
+	 */
+	@RequestMapping("/loginByMsg")
+	@ResponseBody
+	public Result loginByMsg(User user, HttpServletRequest request,Model model){
+		if(user.getMsgCode()==null){
+			return new Result(false, "验证码为空");
+		}
+		String sessionMsgCode = (String) request.getSession().getAttribute("msgCode");
+		if(!user.getMsgCode().equals(sessionMsgCode)){
+			return new Result(false, "验证码不正确");
+		}
+
+		List<User> userList = userService.findAllListByTel(user);
+		if(userList.size()<=0){
+			return new Result(false, "手机号不存在");
+		}
+		User login = userList.get(0);
+		if (login!=null){
+			if(login.getIsBlock() !=null && "1".equals(login.getIsBlock())){
+				return new Result(false, "您的账号已经被锁定，请联系管理员！");
+			}
+			request.getSession().setAttribute("login",login);
+			request.getSession().removeAttribute("msgCode");
+			return new Result(true, "登录成功");
+		}else{
+			return new Result(false, "登录失败");
+		}
+	}
 	
 	@RequestMapping("/update_lendPoint")
 	public String update_lendPoint(User user, HttpServletRequest request,Model model){
@@ -246,6 +281,31 @@ public class UserController {
 			return new Result(false, "发送失败");
 		}
 	}
+
+	@GetMapping("/sendMsgCode")
+	@ResponseBody
+	public Result sendMsg(User user, HttpSession session){
+		try{
+			List<User> userList = userService.findAllListByTel(user);
+			if(userList.size()<=0){
+				return new Result(false, "手机号不存在");
+			}
+			//生成验证码
+			String msgCode = RandomStringUtils.randomNumeric(6);
+			System.out.println("您的验证码是：" + msgCode + "。请不要把验证码泄露给其他人。");
+			Result result = SendMsgUtils.sendMsgCode(user.getTel(), msgCode);
+			//Result result = new Result(true,"");
+			if(result.isSuccess()){
+				session.setAttribute("msgCode",msgCode);
+			}
+			return new Result(true, result.getMessage());
+		}catch (Exception e){
+			e.printStackTrace();
+			return new Result(false, "发送失败");
+		}
+	}
+
+
 	
 	
 }

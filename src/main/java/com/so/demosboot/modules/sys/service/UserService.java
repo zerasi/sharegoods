@@ -67,4 +67,8 @@ public class UserService extends BaseService<UserDao, User> {
 		dao.deleteUserEx(userEx);
 		
 	}
+
+    public List<User> findAllListByTel(User user) {
+		return dao.findAllListByTel(user);
+    }
 }
